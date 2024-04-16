@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accommodation index{% endblock %}
+
+{% block body %}
+    <h1>Accommodation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Country</th>
+                <th>PostalCode</th>
+                <th>TypeAccommodation</th>
+                <th>NumberRooms</th>
+                <th>Services</th>
+                <th>Email</th>
+                <th>Img</th>
+                <th>CheckIn</th>
+                <th>CheckOut</th>
+                <th>Description</th>
+                <th>Hidden</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for accommodation in accommodations %}
+            <tr>
+                <td>{{ accommodation.id }}</td>
+                <td>{{ accommodation.name }}</td>
+                <td>{{ accommodation.address }}</td>
+                <td>{{ accommodation.country }}</td>
+                <td>{{ accommodation.postalCode }}</td>
+                <td>{{ accommodation.typeAccommodation }}</td>
+                <td>{{ accommodation.numberRooms }}</td>
+                <td>{{ accommodation.services ? accommodation.services|join(', ') : '' }}</td>
+                <td>{{ accommodation.email }}</td>
+                <td>{{ accommodation.img ? accommodation.img|join(', ') : '' }}</td>
+                <td>{{ accommodation.checkIn ? accommodation.checkIn|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ accommodation.checkOut ? accommodation.checkOut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ accommodation.description }}</td>
+                <td>{{ accommodation.hidden ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_accommodation_show', {'id': accommodation.id}) }}">show</a>
+                    <a href="{{ path('app_accommodation_edit', {'id': accommodation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="15">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_accommodation_new') }}">Create new</a>
+{% endblock %}

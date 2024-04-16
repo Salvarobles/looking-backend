@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Accommodation{% endblock %}
+
+{% block body %}
+    <h1>Create new Accommodation</h1>
+
+    {{ include('accommodation/_form.html.twig') }}
+
+    <a href="{{ path('app_accommodation_index') }}">back to list</a>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reservation{% endblock %}
+
+{% block body %}
+    <h1>Reservation</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ reservation.id }}</td>
+            </tr>
+            <tr>
+                <th>StartDate</th>
+                <td>{{ reservation.startDate ? reservation.startDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndDate</th>
+                <td>{{ reservation.endDate ? reservation.endDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ reservation.status }}</td>
+            </tr>
+            <tr>
+                <th>NumberChildren</th>
+                <td>{{ reservation.numberChildren }}</td>
+            </tr>
+            <tr>
+                <th>NumberYoung</th>
+                <td>{{ reservation.numberYoung }}</td>
+            </tr>
+            <tr>
+                <th>NumberAdults</th>
+                <td>{{ reservation.numberAdults }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ reservation.price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reservation_index') }}">back to list</a>
+
+    <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}">edit</a>
+
+    {{ include('reservation/_delete_form.html.twig') }}
+{% endblock %}
