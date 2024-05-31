@@ -81,8 +81,20 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
     
+            $userObject = [
+                'id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'name' => $user->getName(),
+                'surname' => $user->getSurname(),
+                'birthday' => $user->getBirthdate(),
+                'reservations' => $user->getReservations(),
+                'reviews' => $user->getReviews(),
+                'avatar' => $user->getAvatar(),
+                'rol' => $user->getRoles(),
+            ];
+            
             // Respuesta JSON
-            $data = ['message' => 'Usuario creado'];
+            $data = ['message' => 'Usuario creado', 'user' => $userObject];
             return new JsonResponse($data, JsonResponse::HTTP_CREATED);
         } catch (\Exception $e) {
             // Capturar y manejar la excepción

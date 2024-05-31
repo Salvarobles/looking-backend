@@ -31,18 +31,26 @@ class CityController extends AbstractController
     {
 
         $cities = $cityRepository->findAll();
-
+    
+        $data = [];
         foreach ($cities as $city) {
+            $accommodationsData = [];
+            foreach ($city->getAccommodations() as $accommodation) {
+                $accommodationsData[] = [
+                    'id' => $accommodation->getId(),
+                    'name' => $accommodation->getName(), // Suponiendo que el alojamiento tiene un método getName() para obtener su nombre
+                ];
+            }
+            
             $data[] = [
                 'id' => $city->getId(),
                 'name' => $city->getName(),
                 'img' => $city->getImg(),
-                'numberReservation' => $city->getNumberReservation(),
-                'accommodation' => $city->getAccommodations(),
-                'attribution' => $city->getAttribution(),
+                'accommodations' => $accommodationsData, // Datos de alojamiento (incluyendo ID y nombre)
+                // Puedes agregar otros campos relevantes aquí
             ];
         }
-
+    
         return $this->json($data);
     }
 

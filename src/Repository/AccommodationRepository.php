@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Accommodation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,4 +46,78 @@ class AccommodationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getFiveBestAccommodation(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id', 'a.name', 'a.typeAccommodation', 'a.img', 'AVG(r.rating) AS averageRating')
+            ->leftJoin('a.reviews', 'r')
+            ->andWhere('a.hidden = :hidden')
+            ->setParameter('hidden', 0)
+            ->groupBy('a.id')
+            ->orderBy('averageRating', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAccommodationsHidden(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id', 'a.name', 'a.typeAccommodation', 'a.email', 'a.img', 'a.checkIn', 'a.checkOut', 'a.description')
+            ->where('a.hidden = :hidden')
+            ->setParameter('hidden', 1)
+            ->getQuery()
+            ->getResult();
+    }
+
+    
+    public function getAccommodations(): array
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('city', 'city');
+        $rsm->addScalarResult('name', 'name');
+        $rsm->addScalarResult('country', 'country');
+        $rsm->addScalarResult('typeAccommodation', 'typeAccommodation');
+        $rsm->addScalarResult('img', 'img');
+        $rsm->addScalarResult('price', 'price');
+        $rsm->addScalarResult('maximumCapacity', 'maximumCapacity');
+    
+        $sql = "
+            SELECT a.id, c.name as city, a.name, a.country, a.type_accommodation as typeAccommodation, a.img, a.price, 
+                   (SELECT r.maximum_capacity 
+                    FROM room r 
+                    WHERE r.accommodation_id = a.id 
+                    ORDER BY r.id ASC 
+                    LIMIT 1) as maximumCapacity
+            FROM accommodation a
+            LEFT JOIN city c ON a.city_id = c.id
+            WHERE a.hidden = :hidden
+        ";
+    
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter('hidden', 0);
+    
+        return $query->getResult();
+    }
+
+    public function getAccommodationsSearch($cityName)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id', 'c.name as city', 'a.name', 'a.country', 'a.typeAccommodation', 'a.img', 'a.price')
+            ->leftJoin('a.city', 'c')
+            ->andWhere('LOWER(c.name) = :city')
+            ->setParameter('city', strtolower($cityName))
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAccommodationExpensive()
+    {
+        return $this->createQueryBuilder('a')
+            ->select('MAX(a.price) AS max_price')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }    
 }

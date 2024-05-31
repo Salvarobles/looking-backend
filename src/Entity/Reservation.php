@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
@@ -39,6 +40,7 @@ class Reservation
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[Ignore]
     private ?Room $room = null;
 
     public function getId(): ?int

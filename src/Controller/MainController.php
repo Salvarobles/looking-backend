@@ -18,7 +18,7 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(): Response
     {
-        return $this->render('main/index.html.twig', [
+        return $this->render('/main/index.html.twig', [
             'controller_name' => 'MainController',
         ]);
     }
@@ -42,18 +42,6 @@ class MainController extends AbstractController
                     if ($user->isHidden()) {
                         throw new \Exception('Usuario bloqueado, contacta con nuestro servicio.');
                     }
-
-                    // Obtener la ruta del archivo
-                    $avatarFilePath = $user->getAvatar();
-
-                    // Obtener la ruta al directorio público
-                    $publicDirectory = $this->getParameter('images_avatar');
-
-                    // Leer el contenido del archivo
-                    $avatarContent = file_get_contents($publicDirectory . $avatarFilePath);
-
-                    // Convertir el contenido del archivo a Base64
-                    $avatarBase64 = base64_encode($avatarContent);
                 
                 $userData = [
                     'id' => $user->getId(),
@@ -63,8 +51,8 @@ class MainController extends AbstractController
                     'birthday' => $user->getBirthdate(),
                     'reservations' => $user->getReservations(),
                     'reviews' => $user->getReviews(),
-                    'avatar' => $avatarBase64,
-                    'rol' => 'user',
+                    'avatar' => $user->getAvatar(),
+                    'rol' => $user->getRoles(),
                 ];
 
                 $data = ['login' => 'true', 'account' => $userData];
@@ -86,25 +74,6 @@ class MainController extends AbstractController
                         throw new \Exception('Si su alojamiento ha sido recientemente creado, le solicitamos su comprensión mientras nuestro equipo de administración lo revisa. Si considera que ha pasado un tiempo excesivo sin respuesta, le invitamos a contactar a nuestro servicio de atención al cliente para asistencia adicional.');
                     }
 
-                    // Obtener las rutsa de los archivos
-                    $imgsFilePaths = $accommodation->getImg();
-
-                    // Array para almacenar los datos Base64 de las imágenes
-                    $imgsBase64 = [];
-
-                    // Recorrer cada ruta de archivo
-                    foreach ($imgsFilePaths as $imgFilePath) {
-                        // Leer el contenido del archivo
-                        $imgContent = file_get_contents($imgFilePath);
-                        
-                        // Convertir el contenido del archivo a Base64
-                        $imgBase64 = base64_encode($imgContent);
-                        
-                        // Agregar el dato Base64 al array de imágenes
-                        $imgsBase64[] = $imgBase64;
-                    }
-
-
                     $accommodationData = [
                         'id' => $accommodation->getId(),
                         'name' => $accommodation->getName(),
@@ -115,13 +84,13 @@ class MainController extends AbstractController
                         'typeAccommodation' => $accommodation->getTypeAccommodation(),
                         'numberRooms' => $accommodation->getNumberRooms(),
                         'services' => $accommodation->getServices(),
-                        'img' => $imgBase64,
+                        'img' => $accommodation->getImg(),
                         'checkIn' => $accommodation->getCheckIn(),
                         'checkOut' => $accommodation->getCheckOut(),
                         'description' => $accommodation->getDescription(),
                         'rooms' => $accommodation->getCity(),
                         'reviews' => $accommodation->getReviews(),
-                        'rol' => 'accommodation',
+                        'rol' => 'ROLE_ACCOMMODATION',
                     ];
 
                     $data = ['login' => 'true', 'account' => $accommodationData];
@@ -158,18 +127,6 @@ class MainController extends AbstractController
                     if ($user->isHidden()) {
                         throw new \Exception('Usuario bloqueado, contacta con nuestro servicio.');
                     }
-
-                    // Obtener la ruta del archivo
-                    $avatarFilePath = $user->getAvatar();
-
-                    // Obtener la ruta al directorio público
-                    $publicDirectory = $this->getParameter('images_avatar');
-
-                    // Leer el contenido del archivo
-                    $avatarContent = file_get_contents($publicDirectory . $avatarFilePath);
-
-                    // Convertir el contenido del archivo a Base64
-                    $avatarBase64 = base64_encode($avatarContent);
                 
                 $userData = [
                     'id' => $user->getId(),
@@ -179,8 +136,8 @@ class MainController extends AbstractController
                     'birthday' => $user->getBirthdate(),
                     'reservations' => $user->getReservations(),
                     'reviews' => $user->getReviews(),
-                    'avatar' => $avatarBase64,
-                    'rol' => 'user',
+                    'avatar' => $user->getAvatar(),
+                    'rol' => $user->getRoles(),
                 ];
 
                 $data = ['account' => $userData];
@@ -198,24 +155,6 @@ class MainController extends AbstractController
                         throw new \Exception('Si su alojamiento ha sido recientemente creado, le solicitamos su comprensión mientras nuestro equipo de administración lo revisa. Si considera que ha pasado un tiempo excesivo sin respuesta, le invitamos a contactar a nuestro servicio de atención al cliente para asistencia adicional.');
                     }
 
-                    // Obtener las rutsa de los archivos
-                    $imgsFilePaths = $accommodation->getImg();
-
-                    // Array para almacenar los datos Base64 de las imágenes
-                    $imgsBase64 = [];
-
-                    // Recorrer cada ruta de archivo
-                    foreach ($imgsFilePaths as $imgFilePath) {
-                        // Leer el contenido del archivo
-                        $imgContent = file_get_contents($imgFilePath);
-                        
-                        // Convertir el contenido del archivo a Base64
-                        $imgBase64 = base64_encode($imgContent);
-                        
-                        // Agregar el dato Base64 al array de imágenes
-                        $imgsBase64[] = $imgBase64;
-                    }
-
 
                     $accommodationData = [
                         'id' => $accommodation->getId(),
@@ -227,13 +166,13 @@ class MainController extends AbstractController
                         'typeAccommodation' => $accommodation->getTypeAccommodation(),
                         'numberRooms' => $accommodation->getNumberRooms(),
                         'services' => $accommodation->getServices(),
-                        'img' => $imgBase64,
+                        'img' => $accommodation->getImg(),
                         'checkIn' => $accommodation->getCheckIn(),
                         'checkOut' => $accommodation->getCheckOut(),
                         'description' => $accommodation->getDescription(),
                         'rooms' => $accommodation->getCity(),
                         'reviews' => $accommodation->getReviews(),
-                        'rol' => 'accommodation',
+                        'rol' => 'ROLE_ACCOMMODATION',
                     ];
 
                     $data = ['login' => 'true', 'account' => $accommodationData];

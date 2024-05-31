@@ -27,7 +27,7 @@ class Accommodation
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $country = null;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $postalCode = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -68,6 +68,9 @@ class Accommodation
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $price = null;
 
     public function __construct()
     {
@@ -333,5 +336,17 @@ class Accommodation
     public function getTypesAccommodations() : array 
     {
         return ['Hotel', 'Casa', 'Apartamento', 'Escapadas Rurales', 'Escapadas Urbanas', 'Escapada Familia', 'Escapada con Amigos'];
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?int $price): static
+    {
+        $this->price = $price;
+
+        return $this;
     }
 }

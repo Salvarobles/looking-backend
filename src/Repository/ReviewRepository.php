@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Review;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpParser\Node\Expr\BinaryOp\Smaller;
+use PhpParser\Node\Scalar\Float_;
 
 /**
  * @extends ServiceEntityRepository<Review>
@@ -45,4 +47,16 @@ class ReviewRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getAverageRank($idAccommodation): ?float
+    {
+        $result = $this->createQueryBuilder('r')
+            ->select('AVG(r.rating) as averageRank')
+            ->andWhere('r.accommodation = :idAccommodation')
+            ->setParameter('idAccommodation', $idAccommodation)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result['averageRank'];
+    }
 }

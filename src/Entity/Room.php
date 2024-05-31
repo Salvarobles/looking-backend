@@ -24,6 +24,7 @@ class Room
     private ?int $maximumCapacity = null;
 
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'room')]
+    #[Ignore]
     private Collection $reservations;
 
     #[ORM\ManyToOne(inversedBy: 'rooms')]

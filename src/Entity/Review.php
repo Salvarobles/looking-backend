@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ReviewRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
@@ -34,7 +35,7 @@ class Review
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     private ?User $user = null;
-
+    
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     private ?Accommodation $accommodation = null;
 
