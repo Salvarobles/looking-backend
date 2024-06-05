@@ -190,7 +190,7 @@ class AccommodationController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/getAccommodations', name: 'app_accommodation', methods: ['GET'])]
+    #[Route('/getAccommodations', name: 'app_accommodations', methods: ['GET'])]
     public function getAccommodations (AccommodationRepository $accommodationRepository, ReviewRepository $reviewRepository,EntityManagerInterface $entityManager): JsonResponse
     {
 
@@ -220,20 +220,29 @@ class AccommodationController extends AbstractController
     }
 
     #[Route('/getAccommodationsSearch', name: 'app_accommodation_search', methods: ['POST'])]
-    public function getAccommodationsSearch (AccommodationRepository $accommodationRepository, Request $request, ReviewRepository $reviewRepository): JsonResponse
+    public function getAccommodationsSearch (EntityManagerInterface $entityManager, AccommodationRepository $accommodationRepository, Request $request, ReviewRepository $reviewRepository): JsonResponse
     {
-
         $requestData = json_decode($request->getContent(), true);
 
         $cityName = strtolower($requestData['city']);
         
-        $accommodations = $accommodationRepository->getAccommodationsSearch($cityName);
+        
+        if (empty($cityName)) {
+            return new JsonResponse(['error' => 'El nombre ciudad es requerido'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $accommodations = $accommodationRepository->getAccommodationsSearch($cityName );
+
+        if (!$accommodations) {
+            return new JsonResponse(['error' => 'No se han encontrado ninguna ciudad'], JsonResponse::HTTP_NOT_FOUND);
+        }
 
         $data = [];
 
         // Necesito Name, city, reseña, precio por noche, img, 
 
         foreach($accommodations as $accommodation){
+        
             $data[] = [
                 'id' => $accommodation['id'],
                 'name' => $accommodation['name'],
@@ -241,11 +250,11 @@ class AccommodationController extends AbstractController
                 'review' => $reviewRepository->getAverageRank($accommodation['id']),
                 'price' => $accommodation['price'],
                 'img' => $accommodation['img'][0],
-                'maxCapacity' => $accommodation->getRooms()[0]->getMaximumCapacity(),
-                'typeAccommodation' => $accommodation->getTypeAccommodation(),
+                // 'maxCapacity' => $room[0]->getMaximoCapacity(),
+                // 'typeAccommodation' => $accommodation->getTypeAccommodation(),
             ];
         }
-    
+
         return $this->json($data);
     }
 
@@ -260,7 +269,7 @@ class AccommodationController extends AbstractController
     }
 
 
-    #[Route('/getAccommodation', name: 'app_accommodation_search', methods: ['POST'])]
+    #[Route('/getAccommodation', name: 'app_accommodation', methods: ['POST'])]
     public function getAccommodation (AccommodationRepository $accommodationRepository, Request $request, ReviewRepository $reviewRepository, ReservationRepository $reservationRepository, RoomRepository $roomRepository): JsonResponse
     {
 

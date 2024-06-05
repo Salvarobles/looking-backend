@@ -61,6 +61,7 @@ class Accommodation
     private Collection $rooms;
 
     #[ORM\ManyToOne(inversedBy: 'accommodations')]
+    #[Ignore]
     private ?City $city = null;
 
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'accommodation')]
